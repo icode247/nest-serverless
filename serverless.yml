@@ -1,0 +1,77 @@
+service: nest-serverles
+
+plugins:
+  - serverless-plugin-optimize
+  - serverless-dynamodb-local
+  - serverless-offline
+functions:
+ app: # The name of the lambda function
+   # The module 'handler' is exported in the file 'src/lambda'
+   handler: dist/main.handler
+   events:
+     - http:
+         method: any
+         path: /{any+}
+
+
+provider: 
+    name: aws
+    runtime: nodejs14.x
+    apiGateway:
+      shouldStartNameWithService: true
+    
+    environment: 
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+      NODE_OPTIONS: --enable-source-maps --stack-trace-limit=1000
+    iam: 
+      role: 
+        statements: 
+            - Effect: 'Allow'
+              Action: 
+                - 'dynamodb:DescribeTable'
+                - 'dynamodb:Query'
+                - 'dynamodb:Scan'
+                - 'dynamodb:GetItem'
+                - 'dynamodb:PutItem'
+                - 'dynamodb:UpdateItem'
+                - 'dynamodb:DeleteItem'
+
+              Resource: arn:aws:dynamodb:us-west-2:*:table/BlogsTable
+
+custom: 
+    esbuild: 
+      bundle: true
+      minify: false
+      sourcemap: true
+      exclude: aws-sdk
+      target: node14
+      define: 'require.resolve: undefined'
+      platform: node
+      concurrency: 10
+    
+    dynamodb: 
+      start: 
+        port: 5000
+        inMemory: true
+        migrate: true
+      
+      stages: dev
+  
+resources: 
+    Resources: 
+      TodosTable: 
+        Type: AWS::DynamoDB::Table
+        Properties:
+          TableName: BlogsTable
+          AttributeDefinitions: 
+              - AttributeName: id
+                AttributeType: S
+            
+          KeySchema: 
+              - AttributeName: id
+                KeyType: HASH
+          
+          ProvisionedThroughput: 
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+     
