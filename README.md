@@ -22,9 +22,25 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+## Tutorials
+* [LogRocket Nest Serverless](https://blog.logrocket.com/nest-js-serverless-application-aws-dynamodb/)
+* Serverless officially supports Node 14X. We use Node 18X, but it seems still working.
+* Update to Node 18x, and [serverless-dynamodb](https://www.npmjs.com/package/serverless-dynamodb) instead of the depreciated `serverless-dynamodb-local`
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Run locally
+* To enable us to run our application locally on our computer, we need to install the following plugins:
+* `serverless -dynamodb-local`: Connects to DynamoDB locally on our computer
+* `serverless-offline`: Starts the application locally
+* `serverless-plugin-optimize`: Enables us to run the application locally
+
+* Run the command below to install the plugins above:
+
+```
+serverless plugin install -n serverless-plugin-optimize 
+serverless plugin install -n serverless-dynamodb-local 
+serverless plugin install -n serverless-offline
+serverless dynamodb install
+```
 
 ## Installation
 
@@ -36,6 +52,7 @@ $ npm install
 
 ```bash
 # development
+$ serverless dynamodb start
 $ npm run start
 
 # watch mode
@@ -43,6 +60,25 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+```
+
+## Testing local api endpoint
+* Create the Dynamo DB table
+* POST a blog to dynamo DB, should return `201 Created`
+```
+curl --location 'http://localhost.a2z.com:3000/dev/blogs' \
+--header 'Content-Type: application/json' \
+--data '{
+  "title": "sample blog",
+  "coverImage": "cover image",
+  "body": "this is a funny blog",
+  "createdBy": "created by Thang Tran",
+  "dateCreated": "2023-11-02"
+}'
+```
+* GET all blogs from Local Dynamo DB:
+```
+curl --location 'http://localhost.a2z.com:3000/dev/blogs'
 ```
 
 ## Test

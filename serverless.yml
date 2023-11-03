@@ -2,7 +2,7 @@ service: nest-serverles
 
 plugins:
   - serverless-plugin-optimize
-  - serverless-dynamodb-local
+  - serverless-dynamodb
   - serverless-offline
 functions:
  app: # The name of the lambda function
@@ -13,10 +13,9 @@ functions:
          method: any
          path: /{any+}
 
-
 provider: 
     name: aws
-    runtime: nodejs14.x
+    runtime: nodejs18.x
     apiGateway:
       shouldStartNameWithService: true
     
@@ -44,16 +43,17 @@ custom:
       minify: false
       sourcemap: true
       exclude: aws-sdk
-      target: node14
+      target: node18
       define: 'require.resolve: undefined'
       platform: node
       concurrency: 10
     
     dynamodb: 
       start: 
-        port: 5000
+        port: 8000
         inMemory: true
         migrate: true
+        docker: false
       
       stages: dev
   

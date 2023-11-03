@@ -5,10 +5,11 @@ import Blog from "./interface";
 
 const dynamoDB = process.env.IS_OFFLINE
   ? new AWS.DynamoDB.DocumentClient({
-      region: "localhost",
-      endpoint: process.env.DYNAMODB_ENDPOINT,
-    })
-  : new AWS.DynamoDB.DocumentClient();
+      region: 'localhost',
+      endpoint: 'http://0.0.0.0:8000',
+      accessKeyId: 'MockAccessKeyId',
+      secretAccessKey: 'MockSecretAccessKey',
+    }) : new AWS.DynamoDB.DocumentClient();
 console.log(dynamoDB)
 @Injectable()
 export class AppService {
@@ -45,7 +46,7 @@ export class AppService {
     try {
       return await dynamoDB
         .get({
-          TableName: process.env.USERS_TABLE_NAME,
+          TableName: "BlogsTable", //process.env.USERS_TABLE_NAME,
           Key: { id },
         })
         .promise();

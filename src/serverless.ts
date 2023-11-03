@@ -20,6 +20,19 @@ async function createExpressApp(
   return app;
 }
 
+/* It doesnt look like we need this export
+export default {
+  plugins: [
+    "serverless-offline",
+    "serverless-dynamodb",
+  ],
+  custom: {
+    'serverless-dynamodb': {
+      port: 8000,
+      docker: false,
+    }
+  }
+}*/
 
 async function bootstrap(): Promise<Server> {
   const expressApp = express();
